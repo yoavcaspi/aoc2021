@@ -42,6 +42,7 @@ def main() -> int:
     parser.add_argument('--filename', default='input.txt')
     args = parser.parse_args()
     data = get_input(args.filename)
+    example()
     print(sol(data))
     return 0
 
@@ -60,7 +61,7 @@ INPUT = """\
 """
 
 
-def test_example():
+def example():
     assert sol(INPUT) == 5
 
 
