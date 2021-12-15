@@ -20,18 +20,21 @@ def sol(data: str) -> int:
     MAX_Y *=5
     sol_board = defaultdict(lambda: 10000)
     sol_board[MAX_Y-1, MAX_X-1] = board[MAX_Y- 1, MAX_X - 1]
-    for y in reversed(range(MAX_Y)):
-        for x in reversed(range(MAX_X)):
-            if (y == MAX_Y - 1) and (x == MAX_X - 1):
-                continue
-            sol_board[y,x] = min(sol_board[y+1,x], sol_board[y,x+1]) + board[y,x]
+    val = sol_board[0, 0] - board[0, 0]
+    flag = True
+    while flag:
+        for y in reversed(range(MAX_Y)):
+            for x in reversed(range(MAX_X)):
+                if (y == MAX_Y - 1) and (x == MAX_X - 1):
+                    continue
 
-    # for y in range(MAX_Y):
-    #     for x in range(MAX_X):
-    #         print(sol_board[y,x], end=" ")
-    #     print()
-    val = sol_board[0,0] - board[0,0]
-    # print(val)
+                min_path = min(sol_board[y + 1, x], sol_board[y, x + 1],
+                               sol_board[y -1, x], sol_board[y, x - 1])
+                sol_board[y, x] = board[y, x] + min_path
+        if val == sol_board[0, 0] - board[0, 0]:
+            flag = False
+        else:
+            val = sol_board[0, 0] - board[0, 0]
     return val
 
 
