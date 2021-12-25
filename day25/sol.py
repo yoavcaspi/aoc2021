@@ -5,62 +5,55 @@ from itertools import product
 from typing import List, Tuple, NamedTuple, Any, Dict
 
 
-def move_right(board, Y, X):
-    new_board = {}
+def move_right(first, second, X):
+    cucumbers = first | second
+    new_east = set()
     flag = False
-    for x in range(0, X):
-        for y in range(0, Y):
-            new_x = (x + 1) % X
-            if board[y, x] == ">" and board[y, new_x] == ".":
-                flag = True
-                new_board[y,x] = "."
-                new_board[y,new_x] = ">"
-            elif (y,x) not in new_board:
-                new_board[y, x] = board[y, x]
-
-    return flag, new_board
+    for y, x in first:
+        new_x = (x + 1) % X
+        if (y, new_x) not in cucumbers:
+            flag = True
+            new_east.add((y, new_x))
+        else:
+            new_east.add((y, x))
+    return flag, new_east
 
 
-def move_down(board, Y, X):
-    new_board = {}
+def move_down(first, second, Y):
+    cucumbers = first | second
+    new_south = set()
     flag = False
-    for y in range(0, Y):
-        for x in range(0, X):
-            new_y = (y + 1) % Y
-            if board[y, x] == "v" and board[new_y, x] == ".":
-                flag = True
-                new_board[y,x] = "."
-                new_board[new_y,x] = "v"
-            elif (y, x) not in new_board:
-                new_board[y, x] = board[y, x]
-    return flag, new_board
+    for y, x in second:
+        new_y = (y + 1) % Y
+        if (new_y, x) not in cucumbers:
+            flag = True
+            new_south.add((new_y, x))
+        else:
+            new_south.add((y, x))
+    return flag, new_south
 
 
 def sol(data: str) -> int:
-    board = {}
     Y = len(data.splitlines())
     X = len(data.splitlines()[0])
+    east = set()
+    south = set()
     for y, line in enumerate(data.splitlines()):
         for x, c in enumerate(line):
-            board[y,x] = c
+            if c == ">":
+                east.add((y, x))
+            elif c == "v":
+                south.add((y, x))
     flag = True
     i = 0
     while flag:
-        print(i)
-        # for y in range(Y):
-        #     for x in range(X):
-        #         print(board[y,x],end="")
-        #     print()
-        # print("\n\n")
-        flag1, new_board = move_right(board, Y, X)
-        board = deepcopy(new_board)
-        flag2, new_board = move_down(board, Y, X)
+        flag1, new_east = move_right(east, south, X)
+        east = deepcopy(new_east)
+        flag2, new_south = move_down(east, south, Y)
         flag = flag1 | flag2
-        board = deepcopy(new_board)
+        south = deepcopy(new_south)
         i += 1
-    print(i)
     return i
-
 
 
 def get_input(filename: str) -> str:
